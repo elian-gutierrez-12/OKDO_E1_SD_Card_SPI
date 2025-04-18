@@ -1,0 +1,13 @@
+../source/sd_card.c:19:16:SPI_TransferByte	32	static
+../source/sd_card.c:35:16:SD_SendCommand	32	static
+../source/sd_card.c:58:13:SD_ReadExtraBytes	32	static
+../source/sd_card.c:65:6:SD_Init	24	static
+../source/sd_card.c:102:6:SD_WriteBlock	24	static
+../source/sd_card.c:131:6:SD_ReadBlock	40	static
+../source/sd_card.c:164:6:SD_AppendLine	24	static
+../source/sd_card.c:190:6:SD_Finalize	8	static
+../source/sd_card.c:200:9:SD_MountFS	16	static
+../source/sd_card.c:211:9:SD_CreateFile	576	static
+../source/sd_card.c:225:9:SD_WriteLineDirect	584	static
+../source/sd_card.c:246:9:SD_ReadAllLines	640	static
+../source/sd_card.c:267:6:SD_FileExists	40	static

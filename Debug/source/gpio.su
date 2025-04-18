@@ -1,0 +1,9 @@
+/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_clock.h:983:20:CLOCK_EnableClock	24	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_gpio.h:153:20:GPIO_PinWrite	24	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_gpio.h:172:24:GPIO_PinRead	24	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_iocon.h:182:22:IOCON_PinMuxSet	24	static
+../source/gpio.c:11:6:GPIO_SPI_Init	16	static
+../source/gpio.c:39:6:GPIO_SPI_SetSCK	16	static
+../source/gpio.c:44:6:GPIO_SPI_SetMOSI	16	static
+../source/gpio.c:49:6:GPIO_SPI_SetCS	16	static
+../source/gpio.c:54:9:GPIO_SPI_ReadMISO	8	static
