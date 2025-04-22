@@ -1,96 +1,74 @@
-# 📀 SD Card Logger con LPC55S69 (Bit-Banging SPI)
+# SD_Card_SPI — Registro continuo de sensores en tarjeta microSD
 
-Este proyecto demuestra cómo leer y escribir datos en una tarjeta microSD desde un microcontrolador **LPC55S69**, utilizando comunicación SPI por bit-banging. Está diseñado específicamente para la placa de desarrollo **OKdo E1**, que integra este microcontrolador y expone pines GPIO compatibles con el módulo microSD de **Adafruit (PID: 254)**.
+Este proyecto forma parte del sistema embebido EMIDSS-7, desarrollado sobre la placa OKdo E1 (basada en el microcontrolador LPC55S69). Implementa un registrador de datos ambiental que guarda continuamente muestras de sensores simulados en una tarjeta microSD utilizando SPI por bit-banging. El sistema opera de forma autónoma y registra los datos en formato CSV, con intervalos de un minuto.
 
-El sistema emplea la biblioteca **FatFs** para el manejo del sistema de archivos, permitiendo almacenar datos tipo CSV desde sensores u otras fuentes.
+## Funcionalidad principal
 
----
+- Comunicación SPI por software (bit-banging) entre el microcontrolador y la tarjeta microSD.
+- Montaje del sistema de archivos FAT con la librería FatFs.
+- Creación y escritura de un archivo `sensores.csv` en la raíz de la tarjeta microSD.
+- Registro periódico (cada 60 segundos) de datos simulados de sensores:
+  - Ozono 1 (O3_1)
+  - Ozono 2 (O3_2)
+  - Metano (CH4)
+  - Temperatura (Temp)
+- Indicador LED integrado para visualizar el momento en que se realiza el registro.
+- Uso del temporizador SysTick como base de tiempo en milisegundos.
 
-## 🧰 Características del Proyecto
+## Formato del archivo CSV generado
 
-- Comunicación SPI implementada por software (bit-banging) usando GPIOs
-- Lectura y escritura de archivos `.csv` con FatFs
-- Verificación de existencia y creación automática de archivo
-- Código estructurado en módulos: `gpio`, `sd_card`, `diskio`
-- Probado en la **placa OKdo E1** (LPCXpresso55S69)
+```
+Tiempo [min], O3_1 [ppm], O3_2 [ppm], CH4 [ppm], Temp [°C]
+0min,0.50,0.45,1.20,25.00
+1min,0.51,0.458,1.205,25.03
+...
+```
 
----
+## Conexiones del sistema
 
-## 🔌 Hardware Requerido
+| Señal   | Módulo microSD (Adafruit) | OKdo E1 (LPC55S69) | Descripción             |
+|---------|----------------------------|---------------------|--------------------------|
+| GND     | GND                        | Pin 16 (izquierda)  | Tierra común             |
+| VCC     | 5V                         | Pin 1 (derecha)     | Alimentación del módulo |
+| MOSI    | DI                         | PIO0_26 (pin 13)     | Salida de datos (MCU)   |
+| MISO    | DO                         | PIO1_3 (pin 12)      | Entrada de datos (MCU)  |
+| SCK     | CLK                        | PIO1_2 (pin 11)      | Reloj SPI manual         |
+| CS      | CS                         | PIO1_27 (pin 14)     | Selección de chip (GPIO)|
 
-- ✅ Placa **OKdo E1** (LPCXpresso55S69)
-- ✅ Módulo microSD de Adafruit [Product ID 254](https://www.adafruit.com/product/254)
-- ✅ Tarjeta microSD formateada en FAT16 o FAT32
-- ✅ Cables jumper cortos
+> Nota: El módulo microSD Adafruit incluye regulador de voltaje y divisores de nivel lógico, por lo tanto puede ser alimentado directamente con 5V.
 
----
+## Estructura del código fuente
 
-## 📊 Tabla de Conexiones
+- `main.c`: Lógica principal del sistema, incluye el ciclo de muestreo y escritura.
+- `gpio.c/.h`: Inicialización de pines GPIO para SPI bit-banging y LED.
+- `sd_card.c/.h`: Comandos SPI, funciones de bloque y acceso con FatFs.
+- `sensor_logger.c/.h`: Formato CSV para datos de sensores y guardado en archivo.
+- `systick.c/.h`: Temporización precisa con SysTick en milisegundos.
+- `diskio.c`: Interfaz entre FatFs y las funciones de acceso a bloques.
+- `ffconf.h`: Configuración del sistema de archivos FatFs.
 
-| Señal SD    | Pin en módulo Adafruit | Pin en OKdo E1           | Función               |
-|-------------|------------------------|---------------------------|------------------------|
-| **VCC**     | 5V                     | Pin 1 derecha             | Alimentación (5V OK)  |
-| **GND**     | GND                    | Pin 16 izquierda          | Tierra común          |
-| **CS**      | CS                     | PIO1_27 (Pin 14 derecha)  | GPIO manual           |
-| **SCK**     | CLK                    | PIO1_2  (Pin 11 derecha)  | GPIO manual (output)  |
-| **MOSI**    | DI                     | PIO0_26 (Pin 13 derecha)  | GPIO manual (output)  |
-| **MISO**    | DO                     | PIO1_3  (Pin 12 derecha)  | GPIO manual (input)   |
+## Requisitos
 
-⚠️ El módulo de Adafruit ya incluye un regulador de voltaje y nivelador de lógica, por lo que puede conectarse sin problemas a 5V.
+- MCUXpresso IDE y SDK para LPC55S69.
+- Librería FatFs integrada (versión R0.15 compatible).
+- Consola semihosting activada o UART para salida de depuración.
+- Tarjeta microSD formateada en FAT16 o FAT32.
+- Módulo microSD Adafruit con regulador y divisor de nivel lógico.
 
----
+## Ejecución
 
-## 📁 Estructura del Proyecto
+1. Conecta el módulo microSD al microcontrolador siguiendo la tabla de conexiones.
+2. Inserta una tarjeta microSD previamente formateada.
+3. Programa el microcontrolador con el binario generado desde MCUXpresso.
+4. Reinicia el sistema. El archivo `sensores.csv` se creará automáticamente si no existe.
+5. Cada minuto se guardará una nueva línea con datos simulados en la tarjeta.
+6. El LED se enciende momentáneamente en cada ciclo de escritura.
 
-/source  
-├── main.c → Flujo principal: inicializa, escribe y lee SD  
-├── gpio.c/.h → Inicialización y control GPIO (SPI manual)  
-├── sd_card.c/.h → Funciones para control SD y FatFs  
-├── diskio.c → Adaptador FatFs a funciones personalizadas  
-└── ffconf.h → Configuración de FatFs (versión 80286)
+## Autor
 
----
+**Elián Gutiérrez**  
+Estudiante de Ingeniería Electrónica — ITESO
 
-## 🚀 Flujo del Programa
+## Licencia
 
-1. Se inicializa el reloj del sistema (96 MHz).
-2. Se configuran los pines GPIO para SPI por software.
-3. Se inicializa la tarjeta SD y se monta el sistema de archivos.
-4. Se verifica si el archivo `sensores.csv` existe; si no, se crea.
-5. Se escriben líneas de prueba (tipo CSV) al archivo.
-6. Se leen todas las líneas del archivo y se imprimen por consola.
-
----
-
-## 🧪 Ejemplo de Salida en Consola
-
-💿 Inicializando SD... ✅ CMD0: SPI mode activado ✅ CMD8: SD v2. Resp: 00 00 01 AA ✅ Tarjeta lista 📊 OCR: C0 FF 80 00 🗂️ El archivo no existe, se creará uno nuevo... ✅ Archivo "sensores.csv" creado correctamente. ✏️ Escribiendo datos... 📖 Leyendo archivo... 24.5,80.1,1010 25.0,79.8,1009 25.2,78.5,1008 25.6,77.9,1007 26.1,77.2,1006 🏁 Fin del programa
-
----
-
-## 💡 Recomendaciones
-
-- Usa cables de conexión lo más cortos posible para garantizar señales estables.
-- Formatea la tarjeta SD en FAT16 o FAT32 antes de usarla.
-- Si el sistema no monta la SD, asegúrate de que no tenga errores de formato. Se recomienda usar el [formateador oficial](https://www.sdcard.org/downloads/formatter/).
-- Este proyecto utiliza **FatFs R0.15 (FFCONF_DEF = 80286)**
-
----
-
-## 📦 Dependencias
-
-- [MCUXpresso IDE](https://www.nxp.com/design/software/development-software/mcuxpresso-software-and-tools/mcuxpresso-integrated-development-environment-ide:MCUXpresso-IDE)
-- [FatFs](http://elm-chan.org/fsw/ff/00index_e.html)
-
----
-
-## 👨‍💻 Autor
-
-**Elian Gutiérrez**  
-Proyecto académico para pruebas de almacenamiento con tarjetas SD sobre **LPC55S69**.
-
----
-
-## 📄 Licencia
-
-MIT License
+Este proyecto es de uso educativo y puede ser reutilizado libremente con atribución.
