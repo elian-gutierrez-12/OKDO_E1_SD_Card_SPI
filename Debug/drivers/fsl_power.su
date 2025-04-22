@@ -1,4 +1,4 @@
-/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/device/periph/PERI_SYSCON.h:3832:24:Chip_GetVersion	16	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/OKDO_E1_SD_Card_SPI/device/periph/PERI_SYSCON.h:3832:24:Chip_GetVersion	16	static
 ../drivers/fsl_clock.h:983:20:CLOCK_EnableClock	24	static
 ../drivers/fsl_power.c:336:13:lf_set_dcdc_power_profile_low	16	static
 ../drivers/fsl_power.c:356:13:POWER_EnterLowPower	24	static

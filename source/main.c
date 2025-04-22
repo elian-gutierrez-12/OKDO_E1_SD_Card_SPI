@@ -1,7 +1,7 @@
 /**
  * @file    main.c
- * @brief   Ejemplo de uso del sistema de archivos con tarjeta microSD usando SPI por bit-banging
- * @date    2025-04-17
+ * @brief   Registro continuo de sensores en SD cada minuto con SPI manual y LED de actividad.
+ * @date    2025-04-22
  * @author  elian
  */
 
@@ -11,18 +11,22 @@
 #include "fsl_debug_console.h"
 #include "gpio.h"
 #include "sd_card.h"
+#include "sensor_logger.h"
+#include "systick.h"
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 FATFS fs;
 const char *filename = "sensores.csv";
 
 int main(void)
 {
+    // --- Inicializaciones ---
     BOARD_BootClockFROHF96M();
-    GPIO_SPI_Init();
+    GPIO_init();      // Inicializa LED y pines SPI
+    SysTick_Init();   // Configura SysTick a 1 ms
 
-    PRINTF("📀 Inicializando SD...\r\n");
     SD_Init();
 
     if (SD_MountFS() != FR_OK)
@@ -33,24 +37,32 @@ int main(void)
         PRINTF("📄 El archivo no existe, se creará uno nuevo...\r\n");
         if (SD_CreateFile(filename) != FR_OK)
             return 1;
+
+        SD_WriteLineDirect(filename, "Tiempo [min], O3_1 [ppm], O3_2 [ppm], CH4 [ppm], Temp [°C]\n");
     }
     else
     {
         PRINTF("✅ El archivo \"%s\" ya existe.\r\n", filename);
     }
 
-    PRINTF("📝 Escribiendo datos...\r\n");
+    PRINTF("📝 Iniciando registro continuo de datos (cada minuto)...\r\n");
 
-    SD_WriteLineDirect(filename, "24.5,80.1,1010\n");
-    SD_WriteLineDirect(filename, "25.0,79.8,1009\n");
-    SD_WriteLineDirect(filename, "25.2,78.5,1008\n");
-    SD_WriteLineDirect(filename, "25.6,77.9,1007\n");
-    SD_WriteLineDirect(filename, "26.1,77.2,1006\n");
+    // --- Bucle infinito para registrar muestras cada minuto ---
+    uint32_t tiempo_min = 0;
 
-    PRINTF("📖 Leyendo archivo...\r\n");
-    SD_ReadAllLines(filename);
+    while (1)
+    {
+        // Simulación de sensores
+        float sensorO3_1 = 0.50f + 0.01f * tiempo_min;
+        float sensorO3_2 = 0.45f + 0.008f * tiempo_min;
+        float sensorCH4  = 1.20f + 0.005f * tiempo_min;
+        float temperatura = 25.00f + 0.03f * tiempo_min;
 
-    PRINTF("\r\n🏁 Fin del programa\r\n");
+        LED_on(); // LED indica que se está registrando
+        SensorLogger_Save(sensorO3_1, sensorO3_2, sensorCH4, temperatura, tiempo_min);
+        LED_off();
 
-    while (1) {}
+        SysTick_DelayTicks(60000); // Espera 60,000 ms = 1 minuto
+        tiempo_min++;
+    }
 }

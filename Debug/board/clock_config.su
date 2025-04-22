@@ -1,4 +1,4 @@
-/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_power.h:385:20:POWER_DisablePD	16	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/OKDO_E1_SD_Card_SPI/drivers/fsl_power.h:385:20:POWER_DisablePD	16	static
 ../board/clock_config.c:51:6:BOARD_InitBootClocks	8	static
 ../board/clock_config.c:78:6:BOARD_BootClockFRO12M	8	static
 ../board/clock_config.c:127:6:BOARD_BootClockFROHF96M	8	static

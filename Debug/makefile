@@ -34,7 +34,7 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := SD_Card_SPI_v4
+BUILD_ARTIFACT_NAME := OKDO_E1_SD_Card_SPI
 BUILD_ARTIFACT_EXTENSION := axf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
@@ -46,24 +46,24 @@ all:
 	+@$(MAKE) --no-print-directory main-build && $(MAKE) --no-print-directory post-build
 
 # Main-build Target
-main-build: SD_Card_SPI_v4.axf
+main-build: OKDO_E1_SD_Card_SPI.axf
 
 # Tool invocations
-SD_Card_SPI_v4.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
+OKDO_E1_SD_Card_SPI.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -Xlinker -Map="SD_Card_SPI_v4.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -T SD_Card_SPI_v4_Debug.ld -o "SD_Card_SPI_v4.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -Xlinker -Map="OKDO_E1_SD_Card_SPI.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -T OKDO_E1_SD_Card_SPI_Debug.ld -o "OKDO_E1_SD_Card_SPI.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) SD_Card_SPI_v4.axf
+	-$(RM) OKDO_E1_SD_Card_SPI.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "SD_Card_SPI_v4.axf"; # arm-none-eabi-objcopy -v -O binary "SD_Card_SPI_v4.axf" "SD_Card_SPI_v4.bin" ; # checksum -p LPC55S69 -d "SD_Card_SPI_v4.bin";
+	-arm-none-eabi-size "OKDO_E1_SD_Card_SPI.axf"; # arm-none-eabi-objcopy -v -O binary "OKDO_E1_SD_Card_SPI.axf" "OKDO_E1_SD_Card_SPI.bin" ; # checksum -p LPC55S69 -d "OKDO_E1_SD_Card_SPI.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents main-build post-build

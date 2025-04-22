@@ -1,5 +1,5 @@
-/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_common_arm.h:897:24:DisableGlobalIRQ	16	static
-/Users/elian/Documents/MCUXpresso/EMIDSS/SD_Card_SPI_v4/drivers/fsl_common_arm.h:923:20:EnableGlobalIRQ	24	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/OKDO_E1_SD_Card_SPI/drivers/fsl_common_arm.h:897:24:DisableGlobalIRQ	16	static
+/Users/elian/Documents/MCUXpresso/EMIDSS/OKDO_E1_SD_Card_SPI/drivers/fsl_common_arm.h:923:20:EnableGlobalIRQ	24	static
 ../component/serial_manager/fsl_component_serial_manager.c:425:32:SerialManager_StartWriting	32	static
 ../component/serial_manager/fsl_component_serial_manager.c:487:32:SerialManager_StartReading	32	static
 ../component/serial_manager/fsl_component_serial_manager.c:1243:32:SerialManager_Write	32	static
